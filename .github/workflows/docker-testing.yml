@@ -1,0 +1,33 @@
+name: docker-testing
+
+on:
+  push:
+    branches: [ "master" ]
+  pull_request:
+    branches: [ "master" ]
+
+jobs:
+
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Set up 
+        run: echo "Starting Docker smoke test..."
+
+      - name: Check out Git repository
+        uses: actions/checkout@v4
+
+      - name: Execute smoke test on Docker
+        run: |
+          docker build -t juice-shop .
+          docker run -d -p 3000:3000 juice-shop
+          sleep 10
+          curl -I http://localhost:3000
+
+      - name: Post-Check-Out Git repository
+        run: echo "Post-checkout steps complete"
+
+      - name: Complete job
+        run: echo "All done!"
